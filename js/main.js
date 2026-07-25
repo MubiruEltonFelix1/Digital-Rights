@@ -872,12 +872,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function ensureProfile(user) {
-    const existing = await supabaseClient.from('profiles').select('username, avatar_url, language').eq('id', user.id).maybeSingle();
+    const existing = await supabaseClient.from('profiles').select('username, avatar_url, language, role').eq('id', user.id).maybeSingle();
     if (existing.error) throw existing.error;
     if (existing.data) return existing.data;
 
     const initial = { id: user.id, username: defaultUsername(user), language: 'en' };
-    const created = await supabaseClient.from('profiles').insert(initial).select('username, avatar_url, language').single();
+    const created = await supabaseClient.from('profiles').insert(initial).select('username, avatar_url, language, role').single();
     if (created.error) throw created.error;
     return created.data;
   }
@@ -942,6 +942,30 @@ document.addEventListener('DOMContentLoaded', function () {
           container.appendChild(profileLink);
         }
       });
+
+      // Add admin link for admins and policymakers
+      const navRole = profile.role || 'user';
+      if (navRole === 'admin' || navRole === 'policymaker') {
+        document.querySelectorAll('.header-nav, .mobile-nav').forEach(function (nav) {
+          const existingAdminLink = nav.querySelector('a[href="admin.html"]');
+          if (!existingAdminLink) {
+            const adminLink = document.createElement('a');
+            adminLink.href = 'admin.html';
+            adminLink.textContent = 'Admin';
+            // Insert before the last link or at end
+            const logoutLink = nav.querySelector('a[href="chatbot.html"]');
+            if (logoutLink && logoutLink.parentNode === nav) {
+              logoutLink.parentNode.insertBefore(adminLink, logoutLink.nextSibling);
+            } else {
+              nav.appendChild(adminLink);
+            }
+          }
+        });
+      } else {
+        document.querySelectorAll('.header-nav a[href="admin.html"], .mobile-nav a[href="admin.html"]').forEach(function (link) {
+          link.remove();
+        });
+      }
 
       const profileForm = document.querySelector('[data-profile-form]');
       if (profileForm && !profileForm.dataset.ready) {
@@ -1084,52 +1108,56 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // =============================================
-  // 13. QUIZ TIMER (if present)
+  // 13. QUIZ TIMER (if present) — static-only guard
   // =============================================
-  const quizTimer = document.querySelector('.quiz-timer .timer-value');
-  if (quizTimer) {
-    let totalSeconds = parseInt(quizTimer.textContent.split(':')[0]) * 60 +
-                       parseInt(quizTimer.textContent.split(':')[1]);
+  if (!document.querySelector('.quiz-view')) {
+    const quizTimer = document.querySelector('.quiz-timer .timer-value');
+    if (quizTimer) {
+      let totalSeconds = parseInt(quizTimer.textContent.split(':')[0]) * 60 +
+                         parseInt(quizTimer.textContent.split(':')[1]);
 
-    const timerInterval = setInterval(function () {
-      totalSeconds--;
-      if (totalSeconds <= 0) {
-        clearInterval(timerInterval);
-        quizTimer.textContent = '00:00';
-        alert('Time is up!');
-        return;
-      }
-      const mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-      const secs = (totalSeconds % 60).toString().padStart(2, '0');
-      quizTimer.textContent = mins + ':' + secs;
-    }, 1000);
+      const timerInterval = setInterval(function () {
+        totalSeconds--;
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+          quizTimer.textContent = '00:00';
+          alert('Time is up!');
+          return;
+        }
+        const mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const secs = (totalSeconds % 60).toString().padStart(2, '0');
+        quizTimer.textContent = mins + ':' + secs;
+      }, 1000);
+    }
   }
 
   // =============================================
-  // 14. QUIZ PROGRESS BAR (Update on answer)
+  // 14. QUIZ PROGRESS BAR (Update on answer) — static-only guard
   // =============================================
-  const quizProgress = document.querySelector('.quiz-progress span');
-  const quizTotalQuestions = document.querySelectorAll('.quiz-question');
+  if (!document.querySelector('.quiz-view')) {
+    const quizProgress = document.querySelector('.quiz-progress span');
+    const quizTotalQuestions = document.querySelectorAll('.quiz-question');
 
-  // For a single question view, show static progress
-  if (quizProgress && quizTotalQuestions.length > 0) {
-    // If there are multiple questions shown (preview/sample), count answered
-    const allQuestions = document.querySelectorAll('.quiz-question');
-    const answeredQuestions = document.querySelectorAll('.quiz-option.selected');
+    // For a single question view, show static progress
+    if (quizProgress && quizTotalQuestions.length > 0) {
+      // If there are multiple questions shown (preview/sample), count answered
+      const allQuestions = document.querySelectorAll('.quiz-question');
+      const answeredQuestions = document.querySelectorAll('.quiz-option.selected');
 
-    if (allQuestions.length > 0) {
-      const updateProgress = function () {
-        const answered = document.querySelectorAll('.quiz-option.selected').length;
-        quizProgress.textContent = answered + '/' + allQuestions.length;
-      };
+      if (allQuestions.length > 0) {
+        const updateProgress = function () {
+          const answered = document.querySelectorAll('.quiz-option.selected').length;
+          quizProgress.textContent = answered + '/' + allQuestions.length;
+        };
 
-      document.querySelectorAll('.quiz-option').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-          setTimeout(updateProgress, 10);
+        document.querySelectorAll('.quiz-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            setTimeout(updateProgress, 10);
+          });
         });
-      });
 
-      updateProgress();
+        updateProgress();
+      }
     }
   }
 
