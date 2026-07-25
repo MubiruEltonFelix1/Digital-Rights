@@ -267,7 +267,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (chatHistory.length > 10) chatHistory.splice(0, chatHistory.length - 10);
       } catch (error) {
         typingMessage.remove();
-        addLiveMessage(error.message || 'Mr. DIRI is temporarily unavailable. Please try again.', 'bot', 'error');
+        const message = error instanceof TypeError
+          ? 'Mr. DIRI could not reach the server. Check your connection and try again.'
+          : (error.message || 'Mr. DIRI is temporarily unavailable. Please try again.');
+        addLiveMessage(message, 'bot', 'error');
       } finally {
         chatSendBtn.disabled = false;
         chatInput.disabled = false;
@@ -289,7 +292,231 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // =============================================
-  // 7. FILTER TABS
+  // 7. INTERACTIVE LESSONS
+  // =============================================
+  const lessonLibrary = {
+    privacy: {
+      category: 'Privacy',
+      title: 'Online Privacy & Data Protection',
+      videoTitle: 'Understanding browser tracking',
+      video: 'https://www.youtube-nocookie.com/embed/6EHSlhnE6Ck?rel=0',
+      cards: [
+        ['What is personal data?', 'Information that can identify you directly or indirectly, such as your name, phone number, location, photograph, device ID, or account activity.'],
+        ['What should happen before an organisation collects your data?', 'It should clearly explain what it collects, why it needs it, how it will use it, and who it may share it with.'],
+        ['What is data minimisation?', 'Collecting only the personal information that is genuinely needed for a stated purpose, rather than collecting everything possible.'],
+        ['What can you do today?', 'Review app permissions, remove access that is unnecessary, use privacy settings, and avoid posting information that could expose you or others.']
+      ]
+    },
+    cybersecurity: {
+      category: 'Security',
+      title: 'Cybersecurity Fundamentals',
+      videoTitle: 'Think before you share',
+      video: 'https://www.youtube-nocookie.com/embed/BcdZm3WAF4A?rel=0',
+      cards: [
+        ['What makes a password strong?', 'Use a long, unique passphrase for every account. A password manager can create and store these safely.'],
+        ['Why use two-factor authentication?', 'It adds a second check, so a stolen password alone is usually not enough to enter your account.'],
+        ['What is phishing?', 'A message or website that impersonates a trusted person or organisation to make you reveal information, pay money, or install malware.'],
+        ['What are the basic security habits?', 'Update devices, lock screens, back up important files, verify unexpected requests, and never share PINs or one-time codes.']
+      ]
+    },
+    governance: {
+      category: 'Governance',
+      title: 'Internet Governance',
+      videoTitle: 'Videos from the Internet Society',
+      video: 'https://www.youtube-nocookie.com/embed?listType=user_uploads&list=InternetSociety',
+      cards: [
+        ['What is internet governance?', 'The shared rules, standards, policies, and decisions that shape how the internet develops and is used.'],
+        ['Who governs the internet?', 'No single person does. Governments, companies, civil society, technical bodies, researchers, and users all influence it.'],
+        ['What is the multistakeholder approach?', 'Different affected groups participate in discussion and decision-making instead of leaving every choice to one institution.'],
+        ['Why should young Ugandans participate?', 'Internet policy affects access, affordability, privacy, expression, safety, innovation, and opportunities for education and work.']
+      ]
+    },
+    ai: {
+      category: 'AI Policy',
+      title: 'Artificial Intelligence & Policy',
+      videoTitle: 'AI governance and responsible use',
+      video: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLfa_LyB2OAjqEfNsY6TWcb7EnI92S1ePh',
+      cards: [
+        ['What is artificial intelligence?', 'Computer systems designed to perform tasks such as recognising patterns, generating content, making predictions, or supporting decisions.'],
+        ['How can AI affect rights?', 'It can influence privacy, equality, work, education, access to services, and freedom of expression—positively or negatively.'],
+        ['What is algorithmic bias?', 'Unfair patterns in an automated system, often caused by biased data, design choices, or unequal conditions in the real world.'],
+        ['What does responsible AI require?', 'Clear purpose, human oversight, privacy protection, security, testing for harm, transparency, and a way for affected people to challenge decisions.']
+      ]
+    },
+    rights: {
+      category: 'Rights',
+      title: 'Digital Rights & Freedoms',
+      videoTitle: 'Digital rights and the open internet',
+      video: 'https://www.youtube-nocookie.com/embed?listType=user_uploads&list=InternetSociety',
+      cards: [
+        ['What are digital rights?', 'Human rights as they apply online, including privacy, expression, information access, participation, equality, and safety.'],
+        ['Is freedom of expression unlimited?', 'No. Rights come with responsibilities, and lawful limits may protect other people from threats, harassment, or serious harm.'],
+        ['What is meaningful internet access?', 'Reliable and affordable connectivity, suitable devices, digital skills, accessible services, and the freedom to use the internet safely.'],
+        ['How can you defend digital rights?', 'Learn your rights, document possible violations safely, support trustworthy civic groups, and take part in public policy discussions.']
+      ]
+    },
+    scams: {
+      category: 'Security',
+      title: 'Online Scams & Fraud Prevention',
+      videoTitle: 'Safe online shopping',
+      video: 'https://www.youtube-nocookie.com/embed/el3N6qQjr-I?rel=0',
+      cards: [
+        ['What is the first warning sign of a scam?', 'Unexpected urgency: pressure to act immediately, keep a secret, send money, or provide a code before you can verify the story.'],
+        ['How do you verify a payment request?', 'Stop and contact the person or organisation through a trusted number or official channel—not the contact details in the suspicious message.'],
+        ['What should you never share?', 'Your mobile-money PIN, banking password, full card details, recovery code, or one-time verification code.'],
+        ['What should you do after a scam attempt?', 'Stop contact, save evidence, secure affected accounts, notify the payment provider quickly, and report through appropriate official channels.']
+      ]
+    },
+    identity: {
+      category: 'Rights',
+      title: 'Digital Identity & Citizenship',
+      videoTitle: 'Think before you share',
+      video: 'https://www.youtube-nocookie.com/embed/BcdZm3WAF4A?rel=0',
+      cards: [
+        ['What is a digital identity?', 'The information, accounts, identifiers, and activity that represent a person when using digital services.'],
+        ['Why protect identity documents?', 'Images and numbers from IDs can be abused for impersonation, fraudulent registration, account recovery, or social engineering.'],
+        ['What is your digital footprint?', 'The record created by posts, searches, clicks, accounts, device data, and information that others publish about you.'],
+        ['How can you manage your footprint?', 'Search your name occasionally, review old posts and permissions, secure accounts, and think about future audiences before sharing.']
+      ]
+    },
+    'mobile-money': {
+      category: 'Privacy',
+      title: 'Mobile Money & Financial Privacy',
+      videoTitle: 'Safe online transactions',
+      video: 'https://www.youtube-nocookie.com/embed/el3N6qQjr-I?rel=0',
+      cards: [
+        ['Who should know your mobile-money PIN?', 'Only you. A legitimate agent, telecom employee, bank worker, or support representative should never ask you to reveal it.'],
+        ['What should you check before confirming?', 'The recipient name, number, amount, fee, and reason for payment. Read the complete confirmation screen before entering your PIN.'],
+        ['How do SIM-swap scams cause harm?', 'A criminal takes control of a phone number and may intercept messages or attempt to reset financial and online accounts.'],
+        ['How can you reduce financial risk?', 'Lock your phone and SIM, hide transaction messages, use strong account recovery settings, and report a lost phone immediately.']
+      ]
+    },
+    misinformation: {
+      category: 'Governance',
+      title: 'Misinformation & Media Literacy',
+      videoTitle: 'Navigating digital information',
+      video: 'https://www.youtube-nocookie.com/embed/videoseries?list=PL8dPuuaLjXtN07XYqqWSKpPrtNDiCHTzU',
+      cards: [
+        ['What is misinformation?', 'False or misleading information shared regardless of whether the person sharing it intended to deceive anyone.'],
+        ['What is lateral reading?', 'Leaving the original post or website to check what independent, credible sources say about the claim and its publisher.'],
+        ['What should you inspect before sharing?', 'The original source, publication date, evidence, full context, author, image origin, and confirmation from reliable independent sources.'],
+        ['How do emotions affect verification?', 'Content that causes fear or anger can make people react quickly. Pause before sharing and verify the claim when emotions are high.']
+      ]
+    }
+  };
+
+  const lessonModal = document.querySelector('[data-lesson-modal]');
+  if (lessonModal) {
+    const lessonTitle = lessonModal.querySelector('[data-lesson-title]');
+    const lessonCategory = lessonModal.querySelector('[data-lesson-category]');
+    const cardCounter = lessonModal.querySelector('[data-card-counter]');
+    const cardProgress = lessonModal.querySelector('[data-card-progress]');
+    const cardFront = lessonModal.querySelector('[data-card-front]');
+    const cardBack = lessonModal.querySelector('[data-card-back]');
+    const cardLabel = lessonModal.querySelector('[data-card-label]');
+    const cardHint = lessonModal.querySelector('[data-card-hint]');
+    const flashcard = lessonModal.querySelector('[data-flashcard]');
+    const previousCard = lessonModal.querySelector('[data-card-previous]');
+    const nextCard = lessonModal.querySelector('[data-card-next]');
+    const videoFrame = lessonModal.querySelector('[data-lesson-video]');
+    const videoTitle = lessonModal.querySelector('[data-video-title]');
+    let activeLesson = null;
+    let activeCard = 0;
+    let answerVisible = false;
+    let lastLessonTrigger = null;
+
+    function renderFlashcard() {
+      const card = activeLesson.cards[activeCard];
+      cardFront.textContent = card[0];
+      cardBack.textContent = card[1];
+      cardBack.classList.toggle('hidden', !answerVisible);
+      cardFront.classList.toggle('hidden', answerVisible);
+      cardLabel.textContent = answerVisible ? 'Answer' : 'Question';
+      cardHint.textContent = answerVisible ? 'Tap to see the question' : 'Tap to reveal the answer';
+      cardCounter.textContent = 'Card ' + (activeCard + 1) + ' of ' + activeLesson.cards.length;
+      cardProgress.style.width = (((activeCard + 1) / activeLesson.cards.length) * 100) + '%';
+      previousCard.disabled = activeCard === 0;
+      nextCard.textContent = activeCard === activeLesson.cards.length - 1 ? 'Start again' : 'Next →';
+    }
+
+    function setLessonMode(mode) {
+      lessonModal.querySelectorAll('[data-lesson-mode]').forEach(function (button) {
+        const selected = button.dataset.lessonMode === mode;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-selected', selected ? 'true' : 'false');
+      });
+      lessonModal.querySelectorAll('[data-lesson-panel]').forEach(function (panel) {
+        panel.classList.toggle('hidden', panel.dataset.lessonPanel !== mode);
+      });
+      if (mode === 'video' && activeLesson && !videoFrame.src) videoFrame.src = activeLesson.video;
+    }
+
+    function openLesson(id, trigger) {
+      activeLesson = lessonLibrary[id];
+      if (!activeLesson) return;
+      activeCard = 0;
+      answerVisible = false;
+      lastLessonTrigger = trigger;
+      lessonTitle.textContent = activeLesson.title;
+      lessonCategory.textContent = activeLesson.category;
+      videoTitle.textContent = activeLesson.videoTitle;
+      videoFrame.src = '';
+      renderFlashcard();
+      setLessonMode('cards');
+      lessonModal.classList.remove('hidden');
+      document.body.classList.add('lesson-open');
+      lessonModal.querySelector('[data-close-lesson]').focus();
+    }
+
+    function closeLesson() {
+      lessonModal.classList.add('hidden');
+      document.body.classList.remove('lesson-open');
+      videoFrame.src = '';
+      if (lastLessonTrigger) lastLessonTrigger.focus();
+    }
+
+    document.querySelectorAll('[data-open-lesson]').forEach(function (button) {
+      button.addEventListener('click', function () { openLesson(button.dataset.openLesson, button); });
+    });
+    lessonModal.querySelector('[data-close-lesson]').addEventListener('click', closeLesson);
+    lessonModal.addEventListener('click', function (event) {
+      if (event.target === lessonModal) closeLesson();
+    });
+    flashcard.addEventListener('click', function () {
+      answerVisible = !answerVisible;
+      renderFlashcard();
+    });
+    previousCard.addEventListener('click', function () {
+      if (activeCard > 0) activeCard--;
+      answerVisible = false;
+      renderFlashcard();
+    });
+    nextCard.addEventListener('click', function () {
+      activeCard = activeCard === activeLesson.cards.length - 1 ? 0 : activeCard + 1;
+      answerVisible = false;
+      renderFlashcard();
+    });
+    lessonModal.querySelectorAll('[data-lesson-mode]').forEach(function (button) {
+      button.addEventListener('click', function () { setLessonMode(button.dataset.lessonMode); });
+    });
+    document.addEventListener('keydown', function (event) {
+      if (lessonModal.classList.contains('hidden')) return;
+      if (event.key === 'Escape') closeLesson();
+      if (event.key === 'ArrowLeft' && activeCard > 0) {
+        activeCard--;
+        answerVisible = false;
+        renderFlashcard();
+      }
+      if (event.key === 'ArrowRight') {
+        activeCard = activeCard === activeLesson.cards.length - 1 ? 0 : activeCard + 1;
+        answerVisible = false;
+        renderFlashcard();
+      }
+    });
+  }
+
+  // =============================================
+  // 8. FILTER TABS
   // =============================================
   const filterTabs = document.querySelectorAll('.filter-tab');
 
