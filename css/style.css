@@ -954,6 +954,228 @@ h1, h2, h3, h4, h5, h6 {
   padding: var(--space-6);
 }
 
+.topic-start {
+  margin-top: var(--space-5);
+  width: 100%;
+}
+
+body.lesson-open {
+  overflow: hidden;
+}
+
+.lesson-modal {
+  align-items: center;
+  background: rgba(8, 43, 106, 0.72);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: var(--space-4);
+  position: fixed;
+  z-index: 1200;
+}
+
+.lesson-modal.hidden {
+  display: none;
+}
+
+.lesson-player {
+  background: var(--color-white);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  max-height: calc(100dvh - 2rem);
+  max-width: 760px;
+  overflow-y: auto;
+  padding: var(--space-8);
+  width: 100%;
+}
+
+.lesson-player-header {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+}
+
+.lesson-player-header h2 {
+  font-size: var(--font-size-2xl);
+  margin-top: var(--space-2);
+}
+
+.lesson-close {
+  align-items: center;
+  background: var(--color-light);
+  border-radius: 50%;
+  color: var(--color-navy);
+  display: flex;
+  flex: 0 0 42px;
+  font-size: var(--font-size-2xl);
+  height: 42px;
+  justify-content: center;
+}
+
+.lesson-close:hover,
+.lesson-close:focus-visible {
+  background: var(--color-light-alt);
+}
+
+.lesson-mode-tabs {
+  background: var(--color-light);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr 1fr;
+  margin: var(--space-6) 0;
+  padding: var(--space-2);
+}
+
+.lesson-mode {
+  border-radius: var(--radius-md);
+  color: var(--color-dark-secondary);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-3);
+}
+
+.lesson-mode.active {
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-navy);
+}
+
+.lesson-panel.hidden {
+  display: none;
+}
+
+.flashcard-progress {
+  align-items: center;
+  color: var(--color-dark-secondary);
+  display: flex;
+  font-size: var(--font-size-sm);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.flashcard-progress-track {
+  background: var(--color-light-alt);
+  border-radius: var(--radius-full);
+  flex: 1;
+  height: 8px;
+  overflow: hidden;
+}
+
+.flashcard-progress-track span {
+  background: var(--color-teal);
+  display: block;
+  height: 100%;
+  transition: width var(--transition-base);
+}
+
+.flashcard {
+  align-items: center;
+  background: linear-gradient(145deg, var(--color-navy), var(--color-navy-light));
+  border-radius: var(--radius-xl);
+  color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+  padding: var(--space-10);
+  text-align: center;
+  width: 100%;
+}
+
+.flashcard-side-label {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-5);
+  text-transform: uppercase;
+}
+
+.flashcard strong,
+.flashcard-answer {
+  color: var(--color-white);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-relaxed);
+}
+
+.flashcard-hint {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-8);
+}
+
+.flashcard-controls {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  margin-top: var(--space-5);
+}
+
+.flashcard-controls .btn {
+  min-width: 130px;
+}
+
+.flashcard-controls .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.lesson-video-wrap {
+  aspect-ratio: 16 / 9;
+  background: var(--color-dark);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.lesson-video-wrap iframe {
+  border: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.lesson-panel[data-lesson-panel="video"] h3 {
+  margin-top: var(--space-5);
+}
+
+.lesson-video-note {
+  color: var(--color-dark-secondary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 640px) {
+  .lesson-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .lesson-player {
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    max-height: 92dvh;
+    padding: var(--space-5);
+  }
+
+  .lesson-player-header h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .flashcard {
+    min-height: 280px;
+    padding: var(--space-6);
+  }
+
+  .flashcard strong,
+  .flashcard-answer {
+    font-size: var(--font-size-lg);
+  }
+
+  .flashcard-controls .btn {
+    min-width: 0;
+    padding-inline: var(--space-4);
+  }
+}
+
 .topic-body .topic-tag {
   display: inline-block;
   padding: 2px var(--space-2);
