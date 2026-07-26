@@ -346,8 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
     rights: {
       category: 'Rights',
       title: 'Digital Rights & Freedoms',
-      videoTitle: 'Digital rights and the open internet',
-      video: 'https://www.youtube-nocookie.com/embed?listType=user_uploads&list=InternetSociety',
+      videoTitle: 'Digital rights and freedom',
+      video: 'https://www.youtube-nocookie.com/embed/0E-cJinCgW8?rel=0',
       cards: [
         ['Digital rights', 'Digital rights are human rights as they apply online, including privacy, expression, information access, participation, equality, and safety.'],
         ['Freedom and responsibility', 'Freedom of expression is not unlimited. Rights come with responsibilities, and lawful limits may protect people from threats, harassment, or serious harm.'],
