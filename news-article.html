@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Article — DIRI</title>
+  <meta name="description" content="Read the latest DIRI digital rights and technology update.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo"><img src="assets/logo.png" alt="DIRI Logo"><span>DIRI</span></a>
+      <nav class="header-nav"><a href="index.html">Home</a><a href="learn.html">Learn</a><a href="updates.html" class="active">Updates</a><a href="chatbot.html">Mr. DIRI</a></nav>
+      <div class="header-actions"><a href="updates.html" class="btn btn-ghost btn-sm">All Updates</a></div>
+    </div>
+  </header>
+  <main class="news-reader">
+    <div class="container-narrow">
+      <a href="updates.html" class="news-back">&larr; Back to updates</a>
+      <div id="news-article-loading" class="body-md">Loading article...</div>
+      <article id="news-article-content" hidden>
+        <div class="news-reader-meta"><span id="news-article-category"></span><time id="news-article-date"></time></div>
+        <h1 id="news-article-title"></h1>
+        <p class="news-reader-standfirst" id="news-article-summary"></p>
+        <figure class="news-reader-hero" id="news-article-hero-wrap"><img id="news-article-hero" alt=""></figure>
+        <div class="news-reader-body" id="news-article-body"></div>
+        <div class="news-reader-byline">Reviewed by <strong id="news-article-reviewer">DIRI Editorial Desk</strong></div>
+      </article>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2026 DIRI by Team Netizens.</p><div class="footer-bottom-links"><a href="updates.html">Updates</a><a href="index.html">Home</a></div></div></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/news-article.js"></script>
+</body>
+</html>
