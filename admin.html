@@ -65,6 +65,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Weeks
         </button>
+        <button class="admin-tab" data-tab="updates" id="updates-tab" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          Updates
+        </button>
         <button class="admin-tab" data-tab="access" id="access-tab" style="display:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Access
@@ -101,12 +105,21 @@
             <div class="admin-stat-value" id="stat-published-weeks">0</div>
             <div class="admin-stat-label">Published Weeks</div>
           </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-total-users">0</div>
+            <div class="admin-stat-label">Registered Users</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-published-news">0</div>
+            <div class="admin-stat-label">Published Updates</div>
+          </div>
         </div>
         <div style="margin-top: var(--space-8);">
           <h2 class="heading-sm" style="margin-bottom: var(--space-4);">Quick actions</h2>
           <div style="display: flex; flex-wrap: wrap; gap: var(--space-3);">
             <button class="btn btn-primary" data-tab-target="questions">+ New Question</button>
             <button class="btn btn-secondary" data-tab-target="weeks">+ New Week</button>
+            <button class="btn btn-secondary" data-tab-target="updates">+ Publish Update</button>
           </div>
         </div>
       </section>
@@ -185,6 +198,32 @@
             <tbody id="weeks-tbody">
               <tr><td colspan="7" class="text-center body-sm" style="padding: var(--space-10);">Loading weeks...</td></tr>
             </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== UPDATES TAB ========== -->
+      <section class="admin-panel" id="panel-updates">
+        <div class="admin-panel-header">
+          <h1>News &amp; Updates</h1>
+          <p class="body-sm">Write, review and publish the stories shown on DIRI and supplied to approved news partners.</p>
+        </div>
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <input type="text" id="news-search" placeholder="Search updates..." class="form-input">
+          </div>
+          <select id="news-status-filter" class="form-input" style="width:auto;">
+            <option value="all">All status</option>
+            <option value="draft">Drafts</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <button class="btn btn-primary" id="btn-new-news">+ New Update</button>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead><tr><th>Story</th><th>Category</th><th>Status</th><th>Published</th><th style="width:170px;">Actions</th></tr></thead>
+            <tbody id="news-tbody"><tr><td colspan="5" class="text-center body-sm" style="padding:var(--space-10);">Loading updates...</td></tr></tbody>
           </table>
         </div>
       </section>
@@ -360,6 +399,60 @@
       <div class="admin-modal-footer">
         <button class="btn btn-ghost" id="week-modal-cancel">Cancel</button>
         <button class="btn btn-primary" id="week-modal-save">Save Week</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== NEWS EDITOR MODAL ========== -->
+  <div class="admin-modal-overlay" id="news-modal">
+    <div class="admin-modal news-editor-modal">
+      <div class="admin-modal-header">
+        <h2 id="news-modal-title">New Update</h2>
+        <button class="admin-modal-close" id="news-modal-close">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <input type="hidden" id="news-id">
+        <div class="news-editor-grid">
+          <div class="form-group">
+            <label for="news-title">Headline</label>
+            <input id="news-title" class="form-input" maxlength="180" placeholder="Write a clear news headline">
+          </div>
+          <div class="form-group">
+            <label for="news-category">Section</label>
+            <select id="news-category" class="form-input">
+              <option>Data &amp; Privacy</option><option>Cyber &amp; Safety</option><option>Policy Watch</option><option>Digital Life</option><option>Innovation</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="news-summary">Standfirst / summary</label>
+          <textarea id="news-summary" class="form-input" rows="3" maxlength="500" placeholder="Briefly explain why this story matters."></textarea>
+        </div>
+        <div class="news-editor-grid">
+          <div class="form-group">
+            <label for="news-preview-file">Preview image</label>
+            <input id="news-preview-file" class="form-input" type="file" accept="image/jpeg,image/png,image/webp">
+            <input id="news-preview-url" type="hidden">
+            <small class="body-sm">JPEG, PNG or WebP, up to 5 MB. This appears on news cards and at the top of the article.</small>
+          </div>
+          <div class="form-group">
+            <label for="news-status">Publishing status</label>
+            <select id="news-status" class="form-input"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="news-block-heading">
+            <div><label>Article content</label><p class="body-sm">Build the story in reading order using paragraphs, headings, images, videos and quotes.</p></div>
+            <select id="news-add-block-type" class="form-input"><option value="paragraph">Paragraph</option><option value="heading">Subheading</option><option value="image">Image</option><option value="video">YouTube video</option><option value="quote">Quote</option></select>
+            <button class="btn btn-secondary btn-sm" id="news-add-block" type="button">Add block</button>
+          </div>
+          <div id="news-blocks" class="news-blocks"></div>
+        </div>
+        <div class="admin-modal-message" id="news-modal-message"></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn btn-ghost" id="news-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="news-modal-save">Save Update</button>
       </div>
     </div>
   </div>

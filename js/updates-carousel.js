@@ -219,7 +219,52 @@
     updateArrowState();
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  function escapeHtml(value) {
+    var element = document.createElement("div");
+    element.textContent = value || "";
+    return element.innerHTML;
+  }
+
+  function categoryKey(category) {
+    if (/privacy/i.test(category)) return "privacy";
+    if (/cyber|safety/i.test(category)) return "safety";
+    if (/innovation|ai/i.test(category)) return "ai-tech";
+    if (/policy/i.test(category)) return "policy";
+    return "governance";
+  }
+
+  async function renderPublishedNews() {
+    if (!window.diriSupabase) return;
+    var response = await window.diriSupabase.from("news_articles")
+      .select("slug,title,summary,category,preview_image_url,image_url,published_at")
+      .eq("status", "published").lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false });
+    if (response.error || !response.data || !response.data.length) return;
+    var articles = response.data;
+    var featured = articles.slice(0, 3);
+    var more = articles.slice(3);
+    if (!more.length) more = articles;
+    var track = document.querySelector("[data-featured-track]");
+    var rail = document.querySelector("[data-rail]");
+    track.innerHTML = featured.map(function (item, index) {
+      var image = item.preview_image_url || item.image_url || "assets/og-image.png";
+      return '<article class="featured-slide" data-category="' + categoryKey(item.category) + '" aria-hidden="' + (index ? "true" : "false") + '">' +
+        '<img class="featured-media" src="' + escapeHtml(image) + '" alt="" loading="' + (index ? "lazy" : "eager") + '">' +
+        '<div class="featured-scrim"></div><div class="featured-content"><div class="update-meta featured-meta">' +
+        '<span class="update-category navy">' + escapeHtml(item.category) + '</span><span>' + new Date(item.published_at).toLocaleDateString() + '</span></div>' +
+        '<h2 class="featured-title">' + escapeHtml(item.title) + '</h2><p class="featured-excerpt">' + escapeHtml(item.summary) + '</p>' +
+        '<a href="news-article.html?slug=' + encodeURIComponent(item.slug) + '" class="btn btn-primary btn-sm">Read full article &rarr;</a></div></article>';
+    }).join("");
+    rail.innerHTML = more.map(function (item) {
+      return '<article class="update-card rail-card" data-category="' + categoryKey(item.category) + '"><div class="update-meta">' +
+        '<span class="update-category teal">' + escapeHtml(item.category) + '</span><span>' + new Date(item.published_at).toLocaleDateString() + '</span></div>' +
+        '<h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.summary) + '</p>' +
+        '<a href="news-article.html?slug=' + encodeURIComponent(item.slug) + '" class="update-link">Read full article &rarr;</a></article>';
+    }).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    try { await renderPublishedNews(); } catch (error) { console.error("Published news load failed:", error); }
     initFeaturedCarousel();
     initFilterTabs();
     initRail();
