@@ -586,33 +586,68 @@ document.addEventListener('DOMContentLoaded', function () {
   const topicSearch = document.querySelector('[data-topic-search]');
   const topicSearchButton = document.querySelector('[data-topic-search-button]');
   const topicSearchStatus = document.querySelector('[data-topic-search-status]');
+  const topicPagination = document.querySelector('[data-topic-pagination]');
+  const topicPageSize = 3;
   let activeTopicCategory = 'all';
+  let activeTopicPage = 1;
 
   function normaliseSearchText(value) {
     return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
   }
 
-  function applyTopicFilters() {
+  function renderTopicPagination(totalPages, resultCount) {
+    if (!topicPagination) return;
+    const previousButton = topicPagination.querySelector('[data-page-previous]');
+    const nextButton = topicPagination.querySelector('[data-page-next]');
+    const pageButtons = topicPagination.querySelectorAll('[data-page-number]');
+
+    topicPagination.classList.toggle('hidden', resultCount === 0 || totalPages <= 1);
+    previousButton.disabled = activeTopicPage === 1;
+    nextButton.disabled = activeTopicPage === totalPages;
+
+    pageButtons.forEach(function (button) {
+      const page = Number(button.dataset.pageNumber);
+      const isActive = page === activeTopicPage;
+      button.hidden = page > totalPages;
+      button.classList.toggle('active', isActive);
+      if (isActive) {
+        button.setAttribute('aria-current', 'page');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function applyTopicFilters(resetPage) {
     if (!topicsGrid) return;
+    if (resetPage) activeTopicPage = 1;
     const query = topicSearch ? normaliseSearchText(topicSearch.value) : '';
-    let visibleCount = 0;
+    const matchingCards = [];
 
     topicsGrid.querySelectorAll('.topic-card').forEach(function (card) {
       const category = normaliseSearchText(card.dataset.category || '');
       const searchableText = normaliseSearchText(card.textContent);
       const matchesCategory = activeTopicCategory === 'all' || category === activeTopicCategory;
       const matchesSearch = !query || searchableText.includes(query);
-      const isVisible = matchesCategory && matchesSearch;
-      card.hidden = !isVisible;
-      if (isVisible) visibleCount++;
+      if (matchesCategory && matchesSearch) matchingCards.push(card);
     });
+
+    const totalPages = Math.max(1, Math.ceil(matchingCards.length / topicPageSize));
+    activeTopicPage = Math.min(activeTopicPage, totalPages);
+    const firstVisibleIndex = (activeTopicPage - 1) * topicPageSize;
+    const visibleCards = matchingCards.slice(firstVisibleIndex, firstVisibleIndex + topicPageSize);
+
+    topicsGrid.querySelectorAll('.topic-card').forEach(function (card) {
+      card.hidden = !visibleCards.includes(card);
+    });
+    renderTopicPagination(totalPages, matchingCards.length);
 
     if (topicSearchStatus) {
       const isFiltering = query || activeTopicCategory !== 'all';
       topicSearchStatus.classList.toggle('hidden', !isFiltering);
       if (isFiltering) {
-        topicSearchStatus.textContent = visibleCount
-          ? visibleCount + (visibleCount === 1 ? ' lesson found' : ' lessons found')
+        topicSearchStatus.textContent = matchingCards.length
+          ? matchingCards.length + (matchingCards.length === 1 ? ' lesson found' : ' lessons found')
           : 'No lessons match your search. Try another word or category.';
       }
     }
@@ -624,11 +659,22 @@ document.addEventListener('DOMContentLoaded', function () {
         filterTabs.forEach(function (item) { item.classList.remove('active'); });
         tab.classList.add('active');
         activeTopicCategory = normaliseSearchText(tab.textContent);
-        applyTopicFilters();
+        applyTopicFilters(true);
       });
     });
-    if (topicSearch) topicSearch.addEventListener('input', applyTopicFilters);
-    if (topicSearchButton) topicSearchButton.addEventListener('click', applyTopicFilters);
+    if (topicSearch) topicSearch.addEventListener('input', function () { applyTopicFilters(true); });
+    if (topicSearchButton) topicSearchButton.addEventListener('click', function () { applyTopicFilters(true); });
+    if (topicPagination) {
+      topicPagination.addEventListener('click', function (event) {
+        const pageButton = event.target.closest('[data-page-number]');
+        if (pageButton) activeTopicPage = Number(pageButton.dataset.pageNumber);
+        if (event.target.closest('[data-page-previous]') && activeTopicPage > 1) activeTopicPage--;
+        if (event.target.closest('[data-page-next]')) activeTopicPage++;
+        applyTopicFilters(false);
+        topicsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+    applyTopicFilters(true);
   }
 
   // =============================================
