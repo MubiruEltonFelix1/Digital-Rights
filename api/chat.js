@@ -45,12 +45,20 @@ function normalizeHistory(history) {
 
 function requestAttempts(message) {
   const fallbacks = [
-    { model: 'gemini-3.5-flash', search: false },
-    { model: 'gemini-3.5-flash-lite', search: false }
+    { model: 'gemini-2.5-flash-lite', search: false, thinkingBudget: 0 },
+    { model: 'gemini-3.5-flash-lite', search: false, thinkingLevel: 'minimal' }
   ];
   return CURRENT_INFO_PATTERN.test(message)
-    ? [{ model: 'gemini-3.5-flash', search: true }, ...fallbacks]
+    ? [{ model: 'gemini-3.5-flash', search: true, thinkingLevel: 'low' }, ...fallbacks]
     : fallbacks;
+}
+
+function extractReply(data) {
+  return (data?.candidates?.[0]?.content?.parts || [])
+    .filter((part) => !part.thought)
+    .map((part) => part.text || '')
+    .join('')
+    .trim();
 }
 
 module.exports = async function handler(request, response) {
@@ -75,6 +83,7 @@ module.exports = async function handler(request, response) {
   try {
     let result;
     let data;
+    let reply = '';
     for (const attempt of requestAttempts(message)) {
       result = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${attempt.model}:generateContent`, {
         method: 'POST',
@@ -83,21 +92,33 @@ module.exports = async function handler(request, response) {
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents,
           ...(attempt.search ? { tools: [{ google_search: {} }] } : {}),
-          generationConfig: { temperature: 0.4, maxOutputTokens: 500 }
+          generationConfig: {
+            maxOutputTokens: 1200,
+            thinkingConfig: attempt.thinkingLevel
+              ? { thinkingLevel: attempt.thinkingLevel }
+              : { thinkingBudget: attempt.thinkingBudget }
+          }
         })
       });
       data = await result.json();
-      if (result.ok) break;
+      if (result.ok) {
+        reply = extractReply(data);
+        if (reply) break;
+        console.error(
+          `Gemini returned no text (${attempt.model}, search: ${attempt.search}):`,
+          data?.candidates?.[0]?.finishReason || 'No finish reason'
+        );
+        continue;
+      }
       console.error(`Gemini API error (${attempt.model}, search: ${attempt.search}):`, result.status, data?.error?.message || 'Unknown error');
-      if (![404, 429].includes(result.status)) break;
+      if ([401, 403].includes(result.status)) break;
     }
-    if (!result.ok) {
+    if (!result?.ok) {
       return sendJson(response, result.status === 429 ? 429 : 502, {
         error: result.status === 429 ? 'Mr. DIRI is busy. Please try again shortly.' : 'Mr. DIRI could not answer right now.'
       });
     }
-    const reply = (data.candidates?.[0]?.content?.parts || []).map((part) => part.text || '').join('').trim();
-    if (!reply) return sendJson(response, 502, { error: 'Please rephrase your question and try again.' });
+    if (!reply) return sendJson(response, 502, { error: 'Mr. DIRI could not generate an answer right now. Please try again.' });
     const groundingChunks = data.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const sources = groundingChunks
       .map((chunk) => chunk.web)
