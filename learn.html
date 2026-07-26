@@ -285,22 +285,46 @@
       </div>
 
       <div class="lesson-panel" data-lesson-panel="cards">
-        <div class="flashcard-jump">
-          <span>Choose a card</span>
+        <div class="flashcard-stage" data-card-stage>
+          <button class="focus-exit" type="button" data-exit-focus aria-label="Exit focus mode">
+            <span aria-hidden="true">&swarhk;</span>
+            Exit focus
+          </button>
+          <div class="flashcard-progress">
+            <span data-card-counter>Card 1 of 4</span>
+            <div class="flashcard-progress-track"><span data-card-progress></span></div>
+          </div>
+          <article class="flashcard" data-flashcard tabindex="-1">
+            <span class="flashcard-side-label" data-card-label>Card 1</span>
+            <h3 data-card-front></h3>
+            <p class="flashcard-content" data-card-back></p>
+          </article>
+          <div class="flashcard-controls">
+            <button class="btn btn-outline" type="button" data-card-previous>&larr; Previous</button>
+            <button class="btn btn-primary" type="button" data-card-next>Next &rarr;</button>
+          </div>
+          <div class="lesson-view-options" aria-label="Flashcard view options">
+            <button class="lesson-view-option" type="button" data-show-card-grid>
+              <span aria-hidden="true">&#x25A6;</span>
+              View all cards
+            </button>
+            <button class="lesson-view-option" type="button" data-enter-focus>
+              <span aria-hidden="true">&#x26F6;</span>
+              Focus mode
+            </button>
+          </div>
+        </div>
+
+        <div class="flashcard-jump hidden" data-card-grid>
+          <div class="flashcard-grid-header">
+            <div>
+              <span class="section-tag">Card overview</span>
+              <h3>Choose a card</h3>
+              <p>Each card shows its learning content so you can quickly find the one you need.</p>
+            </div>
+            <button class="btn btn-outline" type="button" data-hide-card-grid>&larr; Back to current card</button>
+          </div>
           <div class="flashcard-jump-grid" data-card-jump-list></div>
-        </div>
-        <div class="flashcard-progress">
-          <span data-card-counter>Card 1 of 4</span>
-          <div class="flashcard-progress-track"><span data-card-progress></span></div>
-        </div>
-        <article class="flashcard" data-flashcard>
-          <span class="flashcard-side-label" data-card-label>Card 1</span>
-          <h3 data-card-front></h3>
-          <p class="flashcard-content" data-card-back></p>
-        </article>
-        <div class="flashcard-controls">
-          <button class="btn btn-outline" type="button" data-card-previous>&larr; Previous</button>
-          <button class="btn btn-primary" type="button" data-card-next>Next &rarr;</button>
         </div>
       </div>
 
