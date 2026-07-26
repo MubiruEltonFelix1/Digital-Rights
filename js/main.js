@@ -298,8 +298,8 @@ document.addEventListener('DOMContentLoaded', function () {
     privacy: {
       category: 'Privacy',
       title: 'Online Privacy & Data Protection',
-      videoTitle: 'How private is your personal information?',
-      video: 'https://www.youtube-nocookie.com/embed/yrjT8m0hcKU?rel=0',
+      videoTitle: 'A cyber privacy parable',
+      video: 'https://www.youtube-nocookie.com/embed/H0I7jQb37bo?rel=0',
       cards: [
         ['Personal data', 'Personal data is information that can identify you directly or indirectly, such as your name, phone number, location, photograph, device ID, or account activity.'],
         ['Responsible data collection', 'Before collecting your data, an organisation should clearly explain what it collects, why it needs it, how it will use it, and who it may share it with.'],
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
       category: 'AI Policy',
       title: 'Artificial Intelligence & Policy',
       videoTitle: 'AI and algorithmic bias',
-      video: 'https://www.youtube-nocookie.com/embed/ao0ngIU2i8U?rel=0',
+      video: 'https://www.youtube-nocookie.com/embed/VwAlOUE4K7M?rel=0',
       cards: [
         ['Artificial intelligence', 'AI refers to computer systems designed to perform tasks such as recognising patterns, generating content, making predictions, or supporting decisions.'],
         ['AI and human rights', 'AI can influence privacy, equality, work, education, access to services, and freedom of expression—positively or negatively.'],
