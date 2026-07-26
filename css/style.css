@@ -1263,8 +1263,9 @@ body.lesson-open {
 .lesson-view-option {
   align-items: center;
   background: var(--color-light);
-  border: 1px solid var(--color-border);
+  border: 2px solid rgba(8, 43, 106, 0.28);
   border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(8, 43, 106, 0.08);
   color: var(--color-navy);
   display: flex;
   font-weight: var(--font-weight-semibold);
@@ -1281,6 +1282,7 @@ body.lesson-open {
 .lesson-view-option:focus-visible {
   background: rgba(17, 184, 184, 0.1);
   border-color: var(--color-teal);
+  box-shadow: 0 4px 12px rgba(8, 43, 106, 0.14);
 }
 
 .focus-exit {
