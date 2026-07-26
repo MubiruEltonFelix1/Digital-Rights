@@ -994,12 +994,11 @@ body.lesson-open {
 }
 
 .lesson-modal {
-  align-items: center;
-  background: rgba(8, 43, 106, 0.72);
+  align-items: stretch;
+  background: var(--color-white);
   display: flex;
   inset: 0;
-  justify-content: center;
-  padding: var(--space-4);
+  padding: 0;
   position: fixed;
   z-index: 1200;
 }
@@ -1010,12 +1009,16 @@ body.lesson-open {
 
 .lesson-player {
   background: var(--color-white);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-xl);
-  max-height: calc(100dvh - 2rem);
-  max-width: 760px;
+  height: 100dvh;
   overflow-y: auto;
-  padding: var(--space-8);
+  padding: var(--space-8) clamp(var(--space-5), 6vw, var(--space-16));
+  width: 100%;
+}
+
+.lesson-player > * {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1100px;
   width: 100%;
 }
 
@@ -1024,6 +1027,7 @@ body.lesson-open {
   display: flex;
   gap: var(--space-4);
   justify-content: space-between;
+  padding-bottom: var(--space-2);
 }
 
 .lesson-player-header h2 {
@@ -1034,13 +1038,17 @@ body.lesson-open {
 .lesson-close {
   align-items: center;
   background: var(--color-light);
-  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
   color: var(--color-navy);
   display: flex;
-  flex: 0 0 42px;
-  font-size: var(--font-size-2xl);
-  height: 42px;
+  flex: 0 0 auto;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-2);
   justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  white-space: nowrap;
 }
 
 .lesson-close:hover,
@@ -1202,7 +1210,7 @@ body.lesson-open {
   font-size: var(--font-size-base);
   line-height: var(--line-height-relaxed);
   margin-top: var(--space-5);
-  max-width: 580px;
+  max-width: 760px;
 }
 
 .flashcard-controls {
@@ -1246,14 +1254,22 @@ body.lesson-open {
 
 @media (max-width: 640px) {
   .lesson-modal {
-    align-items: flex-end;
+    align-items: stretch;
     padding: 0;
   }
 
   .lesson-player {
-    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-    max-height: 92dvh;
-    padding: var(--space-5);
+    height: 100dvh;
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .lesson-player-header {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  .lesson-close {
+    align-self: flex-start;
   }
 
   .lesson-player-header h2 {
