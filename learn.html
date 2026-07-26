@@ -82,9 +82,9 @@
   <section class="page-content">
     <div class="container">
       <div class="animate-in">
-        <div class="search-bar">
-          <input type="text" placeholder="Search topics... (prototype)" aria-label="Search topics">
-          <button class="btn btn-primary">Search</button>
+        <div class="search-bar" role="search">
+          <input type="search" placeholder="Search lessons..." aria-label="Search lessons" autocomplete="off" data-topic-search>
+          <button class="btn btn-primary" type="button" data-topic-search-button>Search</button>
         </div>
         <div class="filter-tabs" data-filter-target="topics-grid">
           <button class="filter-tab active">All</button>
@@ -254,6 +254,7 @@
           </div>
         </article>
       </div>
+      <p class="topic-search-status hidden" data-topic-search-status aria-live="polite"></p>
 
       <!-- PAGINATION -->
       <nav class="pagination" aria-label="Pagination">

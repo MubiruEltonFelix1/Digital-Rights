@@ -579,39 +579,57 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // =============================================
-  // 8. FILTER TABS
+  // 8. LIVE LESSON SEARCH AND FILTERS
   // =============================================
   const filterTabs = document.querySelectorAll('.filter-tab');
+  const topicsGrid = document.getElementById('topics-grid');
+  const topicSearch = document.querySelector('[data-topic-search]');
+  const topicSearchButton = document.querySelector('[data-topic-search-button]');
+  const topicSearchStatus = document.querySelector('[data-topic-search-status]');
+  let activeTopicCategory = 'all';
 
-  filterTabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      const parent = this.closest('.filter-tabs');
-      if (parent) {
-        parent.querySelectorAll('.filter-tab').forEach(function (t) {
-          t.classList.remove('active');
-        });
-      }
-      this.classList.add('active');
+  function normaliseSearchText(value) {
+    return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
 
-      // Filter logic (example: toggle cards by category)
-      const filterValue = this.textContent.trim().toLowerCase();
-      const targetGrid = this.closest('[data-filter-target]');
-      if (targetGrid) {
-        const gridId = targetGrid.getAttribute('data-filter-target');
-        const grid = document.getElementById(gridId);
-        if (grid) {
-          grid.querySelectorAll('[data-category]').forEach(function (item) {
-            const category = item.getAttribute('data-category').toLowerCase();
-            if (filterValue === 'all' || category === filterValue) {
-              item.style.display = '';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        }
-      }
+  function applyTopicFilters() {
+    if (!topicsGrid) return;
+    const query = topicSearch ? normaliseSearchText(topicSearch.value) : '';
+    let visibleCount = 0;
+
+    topicsGrid.querySelectorAll('.topic-card').forEach(function (card) {
+      const category = normaliseSearchText(card.dataset.category || '');
+      const searchableText = normaliseSearchText(card.textContent);
+      const matchesCategory = activeTopicCategory === 'all' || category === activeTopicCategory;
+      const matchesSearch = !query || searchableText.includes(query);
+      const isVisible = matchesCategory && matchesSearch;
+      card.hidden = !isVisible;
+      if (isVisible) visibleCount++;
     });
-  });
+
+    if (topicSearchStatus) {
+      const isFiltering = query || activeTopicCategory !== 'all';
+      topicSearchStatus.classList.toggle('hidden', !isFiltering);
+      if (isFiltering) {
+        topicSearchStatus.textContent = visibleCount
+          ? visibleCount + (visibleCount === 1 ? ' lesson found' : ' lessons found')
+          : 'No lessons match your search. Try another word or category.';
+      }
+    }
+  }
+
+  if (topicsGrid) {
+    filterTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        filterTabs.forEach(function (item) { item.classList.remove('active'); });
+        tab.classList.add('active');
+        activeTopicCategory = normaliseSearchText(tab.textContent);
+        applyTopicFilters();
+      });
+    });
+    if (topicSearch) topicSearch.addEventListener('input', applyTopicFilters);
+    if (topicSearchButton) topicSearchButton.addEventListener('click', applyTopicFilters);
+  }
 
   // =============================================
   // 8. COUNTER ANIMATION (Stats)
