@@ -414,7 +414,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardFront = lessonModal.querySelector('[data-card-front]');
     const cardBack = lessonModal.querySelector('[data-card-back]');
     const cardLabel = lessonModal.querySelector('[data-card-label]');
+    const flashcard = lessonModal.querySelector('[data-flashcard]');
     const cardJumpList = lessonModal.querySelector('[data-card-jump-list]');
+    const cardStage = lessonModal.querySelector('[data-card-stage]');
+    const cardGrid = lessonModal.querySelector('[data-card-grid]');
     const previousCard = lessonModal.querySelector('[data-card-previous]');
     const nextCard = lessonModal.querySelector('[data-card-next]');
     const videoFrame = lessonModal.querySelector('[data-lesson-video]');
@@ -450,19 +453,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const number = document.createElement('span');
         number.textContent = index + 1;
-        const title = document.createElement('small');
+        const title = document.createElement('h4');
         title.textContent = card[0];
+        const content = document.createElement('p');
+        content.textContent = card[1];
         button.appendChild(number);
         button.appendChild(title);
+        button.appendChild(content);
         button.addEventListener('click', function () {
           activeCard = index;
           renderFlashcard();
+          setCardGrid(false);
         });
         cardJumpList.appendChild(button);
       });
     }
 
+    function setCardGrid(showGrid) {
+      cardStage.classList.toggle('hidden', showGrid);
+      cardGrid.classList.toggle('hidden', !showGrid);
+      lessonModal.classList.remove('focus-mode');
+      if (showGrid) {
+        cardGrid.querySelector('[data-card-jump="' + activeCard + '"]').focus();
+      } else {
+        flashcard.focus();
+      }
+    }
+
+    function setFocusMode(enabled) {
+      cardGrid.classList.add('hidden');
+      cardStage.classList.remove('hidden');
+      lessonModal.classList.toggle('focus-mode', enabled);
+      if (enabled) {
+        lessonModal.querySelector('[data-exit-focus]').focus();
+      } else {
+        lessonModal.querySelector('[data-enter-focus]').focus();
+      }
+    }
+
     function setLessonMode(mode) {
+      lessonModal.classList.remove('focus-mode');
+      cardStage.classList.remove('hidden');
+      cardGrid.classList.add('hidden');
       lessonModal.querySelectorAll('[data-lesson-mode]').forEach(function (button) {
         const selected = button.dataset.lessonMode === mode;
         button.classList.toggle('active', selected);
@@ -492,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function closeLesson() {
+      lessonModal.classList.remove('focus-mode');
       lessonModal.classList.add('hidden');
       document.body.classList.remove('lesson-open');
       videoFrame.src = '';
@@ -502,6 +535,10 @@ document.addEventListener('DOMContentLoaded', function () {
       button.addEventListener('click', function () { openLesson(button.dataset.openLesson, button); });
     });
     lessonModal.querySelector('[data-close-lesson]').addEventListener('click', closeLesson);
+    lessonModal.querySelector('[data-show-card-grid]').addEventListener('click', function () { setCardGrid(true); });
+    lessonModal.querySelector('[data-hide-card-grid]').addEventListener('click', function () { setCardGrid(false); });
+    lessonModal.querySelector('[data-enter-focus]').addEventListener('click', function () { setFocusMode(true); });
+    lessonModal.querySelector('[data-exit-focus]').addEventListener('click', function () { setFocusMode(false); });
     lessonModal.addEventListener('click', function (event) {
       if (event.target === lessonModal) closeLesson();
     });
@@ -518,7 +555,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     document.addEventListener('keydown', function (event) {
       if (lessonModal.classList.contains('hidden')) return;
-      if (event.key === 'Escape') closeLesson();
+      if (event.key === 'Escape') {
+        if (lessonModal.classList.contains('focus-mode')) {
+          setFocusMode(false);
+        } else if (!cardGrid.classList.contains('hidden')) {
+          setCardGrid(false);
+        } else {
+          closeLesson();
+        }
+        return;
+      }
       if (event.key === 'ArrowLeft' && activeCard > 0) {
         activeCard--;
         renderFlashcard();

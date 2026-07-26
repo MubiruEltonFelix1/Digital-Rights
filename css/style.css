@@ -1084,21 +1084,34 @@ body.lesson-open {
 }
 
 .flashcard-jump {
-  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-8);
 }
 
-.flashcard-jump > span {
+.flashcard-jump.hidden,
+.flashcard-stage.hidden {
+  display: none;
+}
+
+.flashcard-grid-header {
+  align-items: flex-end;
+  display: flex;
+  gap: var(--space-5);
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.flashcard-grid-header h3 {
+  margin: var(--space-2) 0;
+}
+
+.flashcard-grid-header p {
   color: var(--color-dark-secondary);
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-3);
 }
 
 .flashcard-jump-grid {
   display: grid;
-  gap: var(--space-3);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .flashcard-jump-button {
@@ -1109,9 +1122,9 @@ body.lesson-open {
   color: var(--color-dark);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  min-height: 90px;
-  padding: var(--space-3);
+  gap: var(--space-3);
+  min-height: 230px;
+  padding: var(--space-5);
   text-align: left;
 }
 
@@ -1129,14 +1142,21 @@ body.lesson-open {
   width: 26px;
 }
 
-.flashcard-jump-button small {
-  display: -webkit-box;
-  font-size: 0.68rem;
+.flashcard-jump-button h4 {
+  color: var(--color-navy);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.35;
+  line-height: var(--line-height-snug);
+}
+
+.flashcard-jump-button p {
+  color: var(--color-dark-secondary);
+  display: -webkit-box;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 6;
 }
 
 .flashcard-jump-button:hover,
@@ -1229,6 +1249,101 @@ body.lesson-open {
   opacity: 0.45;
 }
 
+.lesson-view-options {
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+}
+
+.lesson-view-option {
+  align-items: center;
+  background: var(--color-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-navy);
+  display: flex;
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-3);
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.lesson-view-option span {
+  font-size: var(--font-size-xl);
+}
+
+.lesson-view-option:hover,
+.lesson-view-option:focus-visible {
+  background: rgba(17, 184, 184, 0.1);
+  border-color: var(--color-teal);
+}
+
+.focus-exit {
+  display: none;
+}
+
+.lesson-modal.focus-mode .lesson-player {
+  overflow: hidden;
+  padding: 0;
+}
+
+.lesson-modal.focus-mode .lesson-player-header,
+.lesson-modal.focus-mode .lesson-mode-tabs,
+.lesson-modal.focus-mode .flashcard-progress,
+.lesson-modal.focus-mode .lesson-view-options {
+  display: none;
+}
+
+.lesson-modal.focus-mode .lesson-panel,
+.lesson-modal.focus-mode .flashcard-stage {
+  height: 100%;
+  max-width: none;
+}
+
+.lesson-modal.focus-mode .flashcard {
+  border-radius: 0;
+  height: 100dvh;
+  min-height: 100dvh;
+  padding: clamp(var(--space-8), 8vw, var(--space-16));
+}
+
+.lesson-modal.focus-mode .flashcard h3 {
+  font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
+}
+
+.lesson-modal.focus-mode .flashcard-content {
+  font-size: clamp(var(--font-size-lg), 2vw, var(--font-size-xl));
+  max-width: 900px;
+}
+
+.lesson-modal.focus-mode .flashcard-controls {
+  bottom: var(--space-6);
+  left: 50%;
+  margin: 0;
+  position: fixed;
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 2rem));
+  z-index: 2;
+}
+
+.lesson-modal.focus-mode .focus-exit {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: var(--radius-full);
+  color: var(--color-navy);
+  display: flex;
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  position: fixed;
+  right: var(--space-5);
+  top: var(--space-5);
+  z-index: 3;
+}
+
 .lesson-video-wrap {
   aspect-ratio: 16 / 9;
   background: var(--color-dark);
@@ -1282,11 +1397,29 @@ body.lesson-open {
   }
 
   .flashcard-jump-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .flashcard-jump-button {
-    min-height: 82px;
+    min-height: 210px;
+  }
+
+  .flashcard-grid-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lesson-view-options {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-modal.focus-mode .flashcard {
+    padding: var(--space-16) var(--space-5) 7rem;
+  }
+
+  .lesson-modal.focus-mode .focus-exit {
+    right: var(--space-3);
+    top: var(--space-3);
   }
 
   .flashcard h3 {
