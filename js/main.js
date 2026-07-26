@@ -298,8 +298,8 @@ document.addEventListener('DOMContentLoaded', function () {
     privacy: {
       category: 'Privacy',
       title: 'Online Privacy & Data Protection',
-      videoTitle: 'Understanding browser tracking',
-      video: 'https://www.youtube-nocookie.com/embed/6EHSlhnE6Ck?rel=0',
+      videoTitle: 'How private is your personal information?',
+      video: 'https://www.youtube-nocookie.com/embed/yrjT8m0hcKU?rel=0',
       cards: [
         ['Personal data', 'Personal data is information that can identify you directly or indirectly, such as your name, phone number, location, photograph, device ID, or account activity.'],
         ['Responsible data collection', 'Before collecting your data, an organisation should clearly explain what it collects, why it needs it, how it will use it, and who it may share it with.'],
@@ -310,8 +310,8 @@ document.addEventListener('DOMContentLoaded', function () {
     cybersecurity: {
       category: 'Security',
       title: 'Cybersecurity Fundamentals',
-      videoTitle: 'Think before you share',
-      video: 'https://www.youtube-nocookie.com/embed/BcdZm3WAF4A?rel=0',
+      videoTitle: 'Cybersecurity 101',
+      video: 'https://www.youtube-nocookie.com/embed/sdpxddDzXfE?rel=0',
       cards: [
         ['Strong passwords', 'Use a long, unique passphrase for every account. A password manager can create and store these safely.'],
         ['Two-factor authentication', 'Two-factor authentication adds a second check, so a stolen password alone is usually not enough to enter your account.'],
@@ -322,8 +322,8 @@ document.addEventListener('DOMContentLoaded', function () {
     governance: {
       category: 'Governance',
       title: 'Internet Governance',
-      videoTitle: 'Videos from the Internet Society',
-      video: 'https://www.youtube-nocookie.com/embed?listType=user_uploads&list=InternetSociety',
+      videoTitle: 'Understanding internet governance',
+      video: 'https://www.youtube-nocookie.com/embed/g6Aip9MUZNo?rel=0',
       cards: [
         ['Internet governance', 'Internet governance covers the shared rules, standards, policies, and decisions that shape how the internet develops and is used.'],
         ['The people involved', 'No single person governs the internet. Governments, companies, civil society, technical bodies, researchers, and users all influence it.'],
@@ -334,8 +334,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ai: {
       category: 'AI Policy',
       title: 'Artificial Intelligence & Policy',
-      videoTitle: 'AI governance and responsible use',
-      video: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLfa_LyB2OAjqEfNsY6TWcb7EnI92S1ePh',
+      videoTitle: 'AI and algorithmic bias',
+      video: 'https://www.youtube-nocookie.com/embed/ao0ngIU2i8U?rel=0',
       cards: [
         ['Artificial intelligence', 'AI refers to computer systems designed to perform tasks such as recognising patterns, generating content, making predictions, or supporting decisions.'],
         ['AI and human rights', 'AI can influence privacy, equality, work, education, access to services, and freedom of expression—positively or negatively.'],
@@ -358,8 +358,8 @@ document.addEventListener('DOMContentLoaded', function () {
     scams: {
       category: 'Security',
       title: 'Online Scams & Fraud Prevention',
-      videoTitle: 'Safe online shopping',
-      video: 'https://www.youtube-nocookie.com/embed/el3N6qQjr-I?rel=0',
+      videoTitle: 'Common online scams',
+      video: 'https://www.youtube-nocookie.com/embed/k8UVnkh8i0c?rel=0',
       cards: [
         ['Warning signs of a scam', 'Unexpected urgency is a major warning sign: pressure to act immediately, keep a secret, send money, or provide a code before verifying the story.'],
         ['Verifying payment requests', 'Stop and contact the person or organisation through a trusted number or official channel—not the contact details in the suspicious message.'],
@@ -370,8 +370,8 @@ document.addEventListener('DOMContentLoaded', function () {
     identity: {
       category: 'Rights',
       title: 'Digital Identity & Citizenship',
-      videoTitle: 'Think before you share',
-      video: 'https://www.youtube-nocookie.com/embed/BcdZm3WAF4A?rel=0',
+      videoTitle: 'Digital identity explained',
+      video: 'https://www.youtube-nocookie.com/embed/Ew-_F-OtDFI?rel=0',
       cards: [
         ['Digital identity', 'Your digital identity includes the information, accounts, identifiers, and activity that represent you when using digital services.'],
         ['Protecting identity documents', 'Images and numbers from IDs can be abused for impersonation, fraudulent registration, account recovery, or social engineering.'],
@@ -382,8 +382,8 @@ document.addEventListener('DOMContentLoaded', function () {
     'mobile-money': {
       category: 'Privacy',
       title: 'Mobile Money & Financial Privacy',
-      videoTitle: 'Safe online transactions',
-      video: 'https://www.youtube-nocookie.com/embed/el3N6qQjr-I?rel=0',
+      videoTitle: 'Understanding mobile money fraud',
+      video: 'https://www.youtube-nocookie.com/embed/0twZ6EuLkRM?rel=0',
       cards: [
         ['Protecting your PIN', 'Only you should know your mobile-money PIN. A legitimate agent, telecom employee, bank worker, or support representative should never ask you to reveal it.'],
         ['Checking every transaction', 'Check the recipient name, number, amount, fee, and reason for payment. Read the complete confirmation screen before entering your PIN.'],
@@ -394,8 +394,8 @@ document.addEventListener('DOMContentLoaded', function () {
     misinformation: {
       category: 'Governance',
       title: 'Misinformation & Media Literacy',
-      videoTitle: 'Navigating digital information',
-      video: 'https://www.youtube-nocookie.com/embed/videoseries?list=PL8dPuuaLjXtN07XYqqWSKpPrtNDiCHTzU',
+      videoTitle: 'The facts about fact-checking',
+      video: 'https://www.youtube-nocookie.com/embed/EZsaA0w_0z0?rel=0',
       cards: [
         ['Misinformation', 'Misinformation is false or misleading information shared regardless of whether the person sharing it intended to deceive anyone.'],
         ['Lateral reading', 'Lateral reading means leaving the original post or website to check what independent, credible sources say about the claim and its publisher.'],
