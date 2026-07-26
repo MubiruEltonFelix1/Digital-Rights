@@ -517,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
       lessonCategory.textContent = activeLesson.category;
       videoTitle.textContent = activeLesson.videoTitle;
       videoFrame.removeAttribute('src');
+      videoFrame.setAttribute('src', activeLesson.video);
       renderCardJumpList();
       renderFlashcard();
       setLessonMode('cards');
