@@ -503,7 +503,9 @@ document.addEventListener('DOMContentLoaded', function () {
       lessonModal.querySelectorAll('[data-lesson-panel]').forEach(function (panel) {
         panel.classList.toggle('hidden', panel.dataset.lessonPanel !== mode);
       });
-      if (mode === 'video' && activeLesson && !videoFrame.src) videoFrame.src = activeLesson.video;
+      if (mode === 'video' && activeLesson && videoFrame.getAttribute('src') !== activeLesson.video) {
+        videoFrame.setAttribute('src', activeLesson.video);
+      }
     }
 
     function openLesson(id, trigger) {
@@ -514,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () {
       lessonTitle.textContent = activeLesson.title;
       lessonCategory.textContent = activeLesson.category;
       videoTitle.textContent = activeLesson.videoTitle;
-      videoFrame.src = '';
+      videoFrame.removeAttribute('src');
       renderCardJumpList();
       renderFlashcard();
       setLessonMode('cards');
@@ -527,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
       lessonModal.classList.remove('focus-mode');
       lessonModal.classList.add('hidden');
       document.body.classList.remove('lesson-open');
-      videoFrame.src = '';
+      videoFrame.removeAttribute('src');
       if (lastLessonTrigger) lastLessonTrigger.focus();
     }
 
