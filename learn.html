@@ -267,13 +267,16 @@
   </section>
 
   <div class="lesson-modal hidden" data-lesson-modal>
-    <section class="lesson-player" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
+    <main class="lesson-player" aria-labelledby="lesson-title">
       <div class="lesson-player-header">
         <div>
           <span class="section-tag" data-lesson-category>Lesson</span>
           <h2 id="lesson-title" data-lesson-title>Digital rights lesson</h2>
         </div>
-        <button class="lesson-close" type="button" data-close-lesson aria-label="Close lesson">&times;</button>
+        <button class="lesson-close" type="button" data-close-lesson aria-label="Back to lessons">
+          <span aria-hidden="true">&larr;</span>
+          Back to lessons
+        </button>
       </div>
 
       <div class="lesson-mode-tabs" role="tablist" aria-label="Choose how to learn">
@@ -308,7 +311,7 @@
         <h3 data-video-title>Lesson video</h3>
         <p class="lesson-video-note">The video loads only when you choose this tab. You can return to the flashcards at any time.</p>
       </div>
-    </section>
+    </main>
   </div>
 
   <!-- FOOTER -->
