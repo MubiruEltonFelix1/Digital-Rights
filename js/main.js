@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
       category: 'Governance',
       title: 'Internet Governance',
       videoTitle: 'Understanding internet governance',
-      video: 'https://www.youtube-nocookie.com/embed/g6Aip9MUZNo?rel=0',
+      video: 'https://www.youtube-nocookie.com/embed/eKHxgaTtMeA?rel=0',
       cards: [
         ['Internet governance', 'Internet governance covers the shared rules, standards, policies, and decisions that shape how the internet develops and is used.'],
         ['The people involved', 'No single person governs the internet. Governments, companies, civil society, technical bodies, researchers, and users all influence it.'],
