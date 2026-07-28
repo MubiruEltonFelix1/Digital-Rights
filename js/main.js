@@ -1137,6 +1137,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const email = document.querySelector('[data-profile-email]');
         const message = document.querySelector('[data-profile-message]');
         const logoutButton = document.querySelector('[data-profile-logout]');
+        const deleteOpenButton = document.querySelector('[data-profile-delete-open]');
+        const deleteDialog = document.querySelector('[data-account-delete-dialog]');
+        const deleteForm = document.querySelector('[data-account-delete-form]');
+        const deleteConfirmation = document.querySelector('[data-account-delete-confirmation]');
+        const deleteSubmit = document.querySelector('[data-account-delete-submit]');
+        const deleteMessage = document.querySelector('[data-account-delete-message]');
         usernameInput.value = profile.username;
         languageInput.value = profile.language || 'en';
         if (profile.avatar_url) avatar.src = profile.avatar_url;
@@ -1150,6 +1156,62 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
 
+        if (deleteOpenButton && deleteDialog && deleteForm && deleteConfirmation && deleteSubmit) {
+          deleteOpenButton.addEventListener('click', function () {
+            deleteConfirmation.value = '';
+            deleteSubmit.disabled = true;
+            deleteSubmit.dataset.loading = 'false';
+            deleteSubmit.textContent = 'Delete Account Permanently';
+            if (deleteMessage) {
+              deleteMessage.textContent = '';
+              deleteMessage.className = 'auth-message';
+            }
+            deleteDialog.showModal();
+            deleteConfirmation.focus();
+          });
+
+          document.querySelectorAll('[data-account-delete-cancel]').forEach(function (button) {
+            button.addEventListener('click', function () {
+              if (deleteSubmit.dataset.loading === 'true') return;
+              deleteDialog.close();
+            });
+          });
+
+          deleteConfirmation.addEventListener('input', function () {
+            deleteSubmit.disabled = deleteConfirmation.value.trim() !== 'DELETE';
+          });
+
+          deleteForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            if (deleteConfirmation.value.trim() !== 'DELETE') return;
+
+            deleteSubmit.disabled = true;
+            deleteSubmit.dataset.loading = 'true';
+            deleteSubmit.textContent = 'Deleting account...';
+            if (deleteMessage) {
+              deleteMessage.textContent = 'Please wait while we securely delete your account.';
+              deleteMessage.className = 'auth-message info';
+            }
+
+            const result = await supabaseClient.functions.invoke('delete-account', {
+              body: { confirmation: 'DELETE' }
+            });
+
+            if (result.error) {
+              deleteSubmit.dataset.loading = 'false';
+              deleteSubmit.textContent = 'Delete Account Permanently';
+              deleteSubmit.disabled = false;
+              if (deleteMessage) {
+                deleteMessage.textContent = result.error.message || 'We could not delete your account. Please try again.';
+                deleteMessage.className = 'auth-message error';
+              }
+              return;
+            }
+
+            await supabaseClient.auth.signOut({ scope: 'local' });
+            window.location.href = 'index.html?account=deleted';
+          });
+        }
         avatarInput.addEventListener('change', async function () {
           const file = avatarInput.files && avatarInput.files[0];
           if (!file) return;
