@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
       category: 'Governance',
       title: 'Internet Governance',
       videoTitle: 'Understanding internet governance',
-      video: 'https://www.youtube-nocookie.com/embed/g6Aip9MUZNo?rel=0',
+      video: 'https://www.youtube-nocookie.com/embed/eKHxgaTtMeA?rel=0',
       cards: [
         ['Internet governance', 'Internet governance covers the shared rules, standards, policies, and decisions that shape how the internet develops and is used.'],
         ['The people involved', 'No single person governs the internet. Governments, companies, civil society, technical bodies, researchers, and users all influence it.'],
@@ -746,6 +746,28 @@ document.addEventListener('DOMContentLoaded', function () {
   // 10. SUPABASE AUTHENTICATION
   // =============================================
   const supabaseClient = window.diriSupabase;
+
+  async function loadHomepagePlatformStats() {
+    if (!supabaseClient || !document.querySelector('[data-platform-stat]')) return;
+    try {
+      const result = await supabaseClient.rpc('get_public_platform_stats').single();
+      if (result.error) throw result.error;
+      const stats = result.data || {};
+      const learnerCount = document.querySelector('[data-platform-stat="active-learners"]');
+      const challengeCount = document.querySelector('[data-platform-stat="quiz-challenges"]');
+      if (learnerCount) {
+        learnerCount.textContent = Number(stats.active_learners || 0).toLocaleString() + '+';
+      }
+      if (challengeCount) {
+        challengeCount.textContent = Number(stats.quiz_challenges || 0).toLocaleString();
+      }
+    } catch (error) {
+      console.warn('Platform statistics are temporarily unavailable:', error.message || error);
+    }
+  }
+
+  loadHomepagePlatformStats();
+
   const recoveryForm = document.querySelector('.auth-form');
   const isPasswordRecovery = new URLSearchParams(window.location.search).get('reset') === '1';
 
