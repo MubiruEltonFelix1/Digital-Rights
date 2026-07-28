@@ -2516,14 +2516,20 @@ body.lesson-open {
   color: var(--color-white);
 }
 
-.cta-section .btn-outline {
+.cta-section .btn-outline,
+.cta-section .btn-outline:visited,
+.cta-section .btn-outline:hover,
+.cta-section .btn-outline:focus-visible,
+.cta-section .btn-outline:active {
+  background-color: transparent;
   border-color: var(--color-white);
   color: var(--color-white);
 }
 
-.cta-section .btn-outline:hover {
-  background-color: var(--color-white);
-  color: var(--color-navy);
+.cta-section .btn-outline:hover,
+.cta-section .btn-outline:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.18);
 }
 
 /* ----- Stats Row ----- */
