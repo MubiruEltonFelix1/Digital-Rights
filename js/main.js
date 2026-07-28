@@ -821,7 +821,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function pageUrl(page) {
-    return new URL(page, window.location.href).href;
+    const hostname = window.location.hostname.toLowerCase();
+    const baseUrl = hostname === 'diri.online' || hostname === 'www.diri.online'
+      ? 'https://diri.online/'
+      : window.location.href;
+
+    return new URL(page, baseUrl).href;
   }
 
   function validateAuthForm(form) {
@@ -1060,6 +1065,11 @@ document.addEventListener('DOMContentLoaded', function () {
   async function updateAuthNavigation(session) {
     const loginLinks = document.querySelectorAll('.header-actions a[href="login.html"], .mobile-actions a[href="login.html"]');
     const registerLinks = document.querySelectorAll('.header-actions a[href="register.html"], .mobile-actions a[href="register.html"]');
+    const guestOnlyElements = document.querySelectorAll('[data-auth-guest]');
+
+    guestOnlyElements.forEach(function (element) {
+      element.classList.toggle('hidden', Boolean(session && session.user));
+    });
 
     if (session && session.user) {
       let profile;
