@@ -4080,3 +4080,39 @@ body.lesson-open {
     width: 100%;
   }
 }
+/* Mr. DIRI reliability and reporting */
+.ai-reliability-notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid #e5b86b;
+  border-radius: var(--radius-lg);
+  background: #fff8e8;
+  color: var(--color-dark);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+.msg-report-button {
+  margin-top: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-dark-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  text-decoration: underline;
+}
+
+.msg-report-button:hover,
+.msg-report-button:focus-visible {
+  color: var(--color-primary);
+}
+
+.msg-report-button.reported {
+  color: var(--color-success);
+  cursor: default;
+  text-decoration: none;
+}

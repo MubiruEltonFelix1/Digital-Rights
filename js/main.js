@@ -202,7 +202,38 @@ document.addEventListener('DOMContentLoaded', function () {
         .replace(/^\s*[-*]\s+/gm, '• ');
     }
 
-    function addLiveMessage(text, sender, extraClass, sources) {
+    async function reportAiResponse(question, responseText, button) {
+      const reason = window.prompt('What seems incorrect or unsafe about this answer?');
+      if (reason === null) return;
+      if (reason.trim().length < 3) {
+        window.alert('Please briefly explain what seems incorrect.');
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending report...';
+      const result = await window.diriSupabase.functions.invoke('report-ai-response', {
+        body: {
+          question: question,
+          response: responseText,
+          reason: reason.trim(),
+          pageUrl: window.location.href,
+          website: ''
+        }
+      });
+
+      if (result.error) {
+        button.disabled = false;
+        button.textContent = 'Report this answer';
+        window.alert('We could not send your report right now. Please try again.');
+        return;
+      }
+
+      button.textContent = 'Reported — thank you';
+      button.classList.add('reported');
+    }
+
+    function addLiveMessage(text, sender, extraClass, sources, reportQuestion) {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'chat-message ' + sender + (extraClass ? ' ' + extraClass : '');
       const avatar = document.createElement('div');
@@ -235,6 +266,16 @@ document.addEventListener('DOMContentLoaded', function () {
                          now.getMinutes().toString().padStart(2, '0');
       bubbleWrapper.appendChild(bubble);
       bubbleWrapper.appendChild(time);
+      if (sender === 'bot' && reportQuestion && !extraClass) {
+        const reportButton = document.createElement('button');
+        reportButton.type = 'button';
+        reportButton.className = 'msg-report-button';
+        reportButton.textContent = 'Report this answer';
+        reportButton.addEventListener('click', function () {
+          reportAiResponse(reportQuestion, text, reportButton);
+        });
+        bubbleWrapper.appendChild(reportButton);
+      }
       messageDiv.appendChild(avatar);
       messageDiv.appendChild(bubbleWrapper);
       chatMessages.appendChild(messageDiv);
@@ -262,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await response.json().catch(function () { return {}; });
         if (!response.ok) throw new Error(data.error || 'Mr. DIRI could not answer right now.');
         typingMessage.remove();
-        addLiveMessage(data.reply, 'bot', '', data.sources);
+        addLiveMessage(data.reply, 'bot', '', data.sources, text);
         chatHistory.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
         if (chatHistory.length > 10) chatHistory.splice(0, chatHistory.length - 10);
       } catch (error) {
